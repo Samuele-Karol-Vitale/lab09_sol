@@ -5,17 +5,18 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.util.List;
 import java.util.Random;
 
 /**
@@ -32,7 +33,7 @@ public class BadIOGUI {
     private static final String PATH = System.getProperty("user.home")
         + File.separator
         + BadIOGUI.class.getSimpleName() + ".txt";
-    private static final int PROPORTION = 5;
+    private static final int PROPORTION = 2;
     private final Random randomGenerator = new Random();
     private final JFrame frame = new JFrame(TITLE);
 
@@ -41,9 +42,14 @@ public class BadIOGUI {
      */
     public BadIOGUI() {
         final JPanel canvas = new JPanel();
-        canvas.setLayout(new BorderLayout());
+        final JPanel interactionPanel = new JPanel();
         final JButton write = new JButton("Write on file");
-        canvas.add(write, BorderLayout.CENTER);
+        final JButton read = new JButton("Read");
+        interactionPanel.setLayout(new BoxLayout(interactionPanel, BoxLayout.LINE_AXIS));
+        canvas.setLayout(new BorderLayout());
+        interactionPanel.add(write);
+        interactionPanel.add(read);
+        canvas.add(interactionPanel, BorderLayout.CENTER);
         frame.setContentPane(canvas);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         /*
@@ -62,6 +68,28 @@ public class BadIOGUI {
                      */
                     try (PrintStream ps = new PrintStream(PATH, StandardCharsets.UTF_8)) {
                         ps.print(randomGenerator.nextInt());
+                    } catch (final IOException e) {
+                        JOptionPane.showMessageDialog(frame, e, "Error", JOptionPane.ERROR_MESSAGE);
+                        e.printStackTrace(); // NOPMD: allowed as this is just an exercise
+                    }
+                }
+            }
+        );
+        read.addActionListener(
+            new ActionListener() {
+                @Override
+                public void actionPerformed(final ActionEvent ignored) {
+                    /*
+                     * This would be VERY BAD in a real application.
+                     *
+                     * This makes the Event Dispatch Thread (EDT) work on an I/O
+                     * operation. I/O operations may take a long time, during which
+                     * your UI becomes completely unresponsive.
+                     */
+                    try (BufferedReader readOutputFromWriteButton = new BufferedReader(
+                        new FileReader(PATH, StandardCharsets.UTF_8)
+                    )) {
+                        IO.println(readOutputFromWriteButton.readLine());
                     } catch (final IOException e) {
                         JOptionPane.showMessageDialog(frame, e, "Error", JOptionPane.ERROR_MESSAGE);
                         e.printStackTrace(); // NOPMD: allowed as this is just an exercise
@@ -93,6 +121,7 @@ public class BadIOGUI {
         /*
          * OK, ready to push the frame onscreen
          */
+        frame.pack();
         frame.setVisible(true);
     }
 
