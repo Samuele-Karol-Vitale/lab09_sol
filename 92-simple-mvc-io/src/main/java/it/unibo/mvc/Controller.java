@@ -1,9 +1,9 @@
 package it.unibo.mvc;
 import java.util.Objects;
-import java.io.DataOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.PrintStream;
+import java.nio.charset.StandardCharsets;
 
 /**
  * Application controller. Performs the I/O.
@@ -15,7 +15,7 @@ public class Controller {
     static public String DEFAULT_FILE_NAME = "output.txt";
     File file;
     /**
-     * this constructor create a {@code Controller} that by deafult set as current file {@value DEFAULT_FILE_NAME}
+     * Creates a {@code Controller} that by deafult sets as current file {@value DEFAULT_FILE_NAME}
      * @throws NullPointerException
      */
     public Controller() {
@@ -23,15 +23,16 @@ public class Controller {
             System.getProperty("file.separator") + DEFAULT_FILE_NAME);
     }
     /**
-     * this constructor create a {@code Controller} that set a specified file as current file
+     * Creates a {@code Controller} that sets a specified file as current file
      * @throws NullPointerException
      */
     public Controller(String filePath) {
         file = new File(
-            Objects.requireNonNull(filePath, "you can't set null as current file"));
+            Objects.requireNonNull(filePath, "you can't set null as current file")
+        );
     }
     /**
-     * this method set file as the current file
+     * This method set file as the current file
      * @param file
      */
     public void setFile(File file) {
@@ -50,17 +51,15 @@ public class Controller {
         return file.getPath();
     }
     /**
-     * this method takes a String and it appends at the current file
+     * This method takes a String and it appends at the current file
      * @param newContent
      * @throws IOException
      */
     public void appendString(String newContent) throws IOException {
         try (
-            final DataOutputStream writeInFile = new DataOutputStream(
-                new FileOutputStream(file,true)
-            )
+            final PrintStream writeInFile = new PrintStream(file,StandardCharsets.UTF_8);
         ) {
-            writeInFile.writeUTF(newContent);
+            writeInFile.println(newContent);
         }
     }
 }
