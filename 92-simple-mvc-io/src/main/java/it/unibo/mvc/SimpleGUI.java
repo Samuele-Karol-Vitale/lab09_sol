@@ -1,8 +1,10 @@
 package it.unibo.mvc;
 
+import java.io.File;
 import java.io.IOException;
 
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
@@ -12,10 +14,13 @@ import java.awt.Toolkit;
 /**
  * A very simple program using a graphical interface.
  * {@javadoc}
- * This class implements a GUI for managing an application that allows the user to save a string (entered by the user) into a text file
- * The String is saved into the default file specified into {@code Controller} documentation
+ * This class implements a GUI for managing an application that allows the user to save a string (entered by the user) 
+ * into a text file.
+ * The String is saved into the default file specified into {@code Controller} documentation.
+ * 
  * @see Controller
  */
+
 public final class SimpleGUI {
     //This variable manage the frame's proportion
     private static final int PROPORTION = 3;
@@ -27,8 +32,10 @@ public final class SimpleGUI {
     //This is controller saves the strings into its default output file
     private final Controller applicationController = new Controller();
     /**
-     * This constructor instantiates the application view so that it contains a text area and a button that allows you to save whatever is typed into it.
+     * This constructor instantiates the application view so that it contains a text area and a button that allows you 
+     * to save whatever is typed into it.
      */
+
     public SimpleGUI() {
         final JPanel mainPanel = new JPanel();
         final JTextArea textArea = new JTextArea();
@@ -44,28 +51,45 @@ public final class SimpleGUI {
             e -> {
                 try {
                     applicationController.saveStringOnfile(textArea.getText());
-                } catch (IOException e1) {
-                    IO.println(e1.getMessage());
+                } catch (final IOException ex) {
+                    IO.println(ex.getMessage());
                 }
             }
         );
     }
+    /**
+     * This method allows to change the output file, but by default this application doesn't use it.
+     * 
+     * @param newOutputFile is the output file to use
+     */
 
-    /**
-     * @return the controller instance used by the view
-     */
-    public Controller getController() {
-        return applicationController;
+    public void setFile(final File newOutputFile) {
+        applicationController.setFile(newOutputFile);
     }
     /**
-     * @return Returns the frame used by the view
+     * This method gets the absolute path to the output file.
+     * 
+     * @return  the absolute path to the output file
      */
-    public JFrame getFrame() {
-        return frame;
+
+    public String getPath() {
+        return applicationController.getPath();
     }
     /**
-     * Calculate and display the application's graphical user interface on the screen
+     * This method allows to add a Jcomponent with a constrain to the content pane.
+     * 
+     * @param comp JComponent to add in the content pane
+     * 
+     * @param constrain layout constraintsfor this component
      */
+
+    public void addToContentPane(final JComponent comp, final Object constrain) {
+        frame.getContentPane().add(frame, constrain);
+    }
+    /**
+     * Calculate and display the application's graphical user interface on the screen.
+     */
+
     public void display() {
         final Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
         final int sw = (int) screen.getWidth();
@@ -74,6 +98,10 @@ public final class SimpleGUI {
         frame.setLocationByPlatform(true);
         frame.setVisible(true);
     }
+    /**
+     * Starts the application.
+     */
+
     public void main() {
         new SimpleGUI().display();
     }
