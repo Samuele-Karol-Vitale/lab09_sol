@@ -43,7 +43,7 @@ public final class SimpleGUI {
         saveButton.addActionListener(
             e -> {
                 try {
-                    deafultController.appendString(textArea.getText());
+                    deafultController.saveStringOnfile(textArea.getText());
                 } catch (IOException e1) {
                     IO.println(e1.getMessage());
                 }

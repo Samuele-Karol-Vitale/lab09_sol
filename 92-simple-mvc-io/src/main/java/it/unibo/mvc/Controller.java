@@ -13,7 +13,7 @@ import java.nio.charset.StandardCharsets;
 public class Controller {
     //this constant rappresents the file that the controller can manage by deafult
     static public String DEFAULT_FILE_NAME = "output.txt";
-    File file;
+    private File file;
     /**
      * Creates a {@code Controller} that by deafult sets as current file {@value DEFAULT_FILE_NAME}
      * @throws NullPointerException
@@ -35,8 +35,8 @@ public class Controller {
      * This method set file as the current file
      * @param file
      */
-    public void setFile(File file) {
-        file = Objects.requireNonNull(file, "you can't set null as current file");
+    public void setFile(File newOutPutFile) {
+        file = Objects.requireNonNull(newOutPutFile, "you can't set null as current file");
     }
     /**
      * @return a defensive copy of the current file
@@ -55,7 +55,7 @@ public class Controller {
      * @param newContent
      * @throws IOException
      */
-    public void appendString(String newContent) throws IOException {
+    public void saveStringOnfile(String newContent) throws IOException {
         try (
             final PrintStream writeInFile = new PrintStream(file,StandardCharsets.UTF_8);
         ) {
