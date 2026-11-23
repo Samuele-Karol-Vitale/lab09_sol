@@ -47,6 +47,7 @@ public final class SimpleGUI {
             }
         );
         historyButton.addActionListener(e -> {
+            printArea.setText("");
                 for (final var msg:applicationController.getHistory()) {
                     printArea.append(msg + "\n");
                 }
